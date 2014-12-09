@@ -28,7 +28,7 @@ $(document).ready(function() {
 
             // IFRAME Embed for YouTube
             var video_frame="<iframe width='640' height='385' src='http://www.youtube.com/embed/"+video_id+"' frameborder='2' type='text/html'></iframe>";
-            var final_vid="\
+            var search_vids="\
               <div class='result'> \
                 <div id='title'>" + video_title + "</div> \
                 <div>" + video_frame + "</div> \
@@ -36,10 +36,10 @@ $(document).ready(function() {
               </div>";
 
             console.log("appending "+video_title);
-            $("#results").append(final_vid);
+            $("#results").append(search_vids);
           });
         } else {
-          $("#results").html("<div id='no'>No Videos</div>");
+          $("#results").html("<div class='no'>No Videos</div>");
         }
       }
     });
