@@ -1,13 +1,31 @@
+
+  window.fbAsyncInit = function() {
+    FB.init({
+      appId      : '1577934619089484',
+      xfbml      : true,
+      version    : 'v2.2'
+    });
+  };
+
+  (function(d, s, id){
+     var js, fjs = d.getElementsByTagName(s)[0];
+     if (d.getElementById(id)) {return;}
+     js = d.createElement(s); js.id = id;
+     js.src = "//connect.facebook.net/en_US/sdk.js";
+     fjs.parentNode.insertBefore(js, fjs);
+   }(document, 'script', 'facebook-jssdk'));
+
+
 $(document).ready(function() {
 
 
   var search_function = function() {
     var search_input = $(this).val();
-    if (search_input.length < 4) return;
+    if (search_input.length < 3) return; // use return to exit function early
 
     var keyword= encodeURIComponent(search_input);
     // Youtube API 
-    var yt_url='http://gdata.youtube.com/feeds/api/videos?q='+keyword+'&format=5&max-results=10&v=2&duration=long&category=music%2Clive%2DMusic%2CLive&alt=jsonc'; 
+    var yt_url='http://gdata.youtube.com/feeds/api/videos?q='+keyword+'&format=5&max-results=25&v=2&duration=long&category=music%2Clive%2DMusic%2CLive&alt=jsonc'; 
     // Wiki API
     var wiki_url='http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&format=json&titles='+keyword+'&rvsection=0';
     //var wiki_url='http://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles='+keyword;
@@ -20,18 +38,18 @@ $(document).ready(function() {
         $("#results").html('');
 
         if(response.data.items) {
-          $.each(response.data.items.slice(0,10), function(i, item) {
+          $.each(response.data.items.slice(0,20), function(i, item) {
             // var all_videos=response.item.items; 
             var video_id = item.id;
             var video_title = item.title;
             var video_viewCount = item.viewCount;
 
             // IFRAME Embed for YouTube
-            var video_frame="<iframe width='640' height='385' src='http://www.youtube.com/embed/"+video_id+"' frameborder='2' type='text/html'></iframe>";
+            var video_frame="<iframe width='900' height='600' data-video-id="+video_id+" src='http://www.youtube.com/embed/"+video_id+"' frameborder='2' type='text/html'></iframe>";
             var search_vids="\
               <div class='result'> \
                 <div id='title'>" + video_title + "</div> \
-                <div>" + video_frame + "</div> \
+                <div class='vid_div'>" + video_frame + "</div> \
                 <div id='count'>" + video_viewCount + " Views</div> \
               </div>";
 
@@ -66,6 +84,7 @@ $(document).ready(function() {
   }); 
   */
 
+  // had to throttle search function as too many requests were being made on every keyup
   var throttled_search_function = $.throttle(300, search_function);
   $(".search_input").keyup(throttled_search_function);
 
