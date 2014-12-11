@@ -1,10 +1,7 @@
-<!doctype html>
-<html>
-  <head>
-    <meta charset='utf-8' />
+
 
     <!-- jQuery -->
-    <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.1/jquery.min.js'></script>
+   
 
     <!-- Firebase -->
     <script src='https://cdn.firebase.com/js/client/2.0.2/firebase.js'></script>
@@ -33,7 +30,31 @@
       }
     </script>
     <div id='firechat-wrapper'>
-      <a href='#' onclick='login("twitter");'>Login</a>
+      <a href='#' onclick='login("facebook");'>Login</a>
+      <body>
+    <div id='messagesDiv'></div>
+    <input type='text' id='nameInput' placeholder='Name'>
+    <input type='text' id='messageInput' placeholder='Message'>
+      <script>
+        var myDataRef = new Firebase('https://blazing-inferno-1391.firebaseio.com/');
+        $('#messageInput').keypress(function (e) {
+          if (e.keyCode == 13) {
+            var name = $('#nameInput').val();
+            var text = $('#messageInput').val();
+            myDataRef.push({name: name, text: text});
+            $('#messageInput').val('');
+          }
+        });
+        myDataRef.on('child_added', function(snapshot) {
+          var message = snapshot.val();
+          displayChatMessage(message.name, message.text);
+        });
+        function displayChatMessage(name, text) {
+          $('<div/>').text(text).prepend($('<em/>').text(name+': ')).appendTo($('#messagesDiv'));
+          $('#messagesDiv')[0].scrollTop = $('#messagesDiv')[0].scrollHeight;
+        };
+      </script>
+  </body>
     </div>
   </body>
 </html>
