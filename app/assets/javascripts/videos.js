@@ -128,7 +128,7 @@ $(document).ready(function() {
             $("#results").append(search_vids);
           });
         } else {
-          $("#results").html("<div class='no'>No Videos</div>");
+          $("#results").html("<div class='no_vids'>No Videos</div>");
         }
       }
     });
