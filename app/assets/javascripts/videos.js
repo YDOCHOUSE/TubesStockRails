@@ -25,7 +25,7 @@ $(document).ready(function() {
 
     var keyword= encodeURIComponent(search_input);
     // Youtube API 
-    var yt_url='http://gdata.youtube.com/feeds/api/videos?q='+keyword+'&format=5&max-results=25&v=2&duration=long&category=music%2Clive%2DMusic%2CLive&alt=jsonc'; 
+    var yt_url='http://gdata.youtube.com/feeds/api/videos?q='+keyword+'&format=5&max-results=10&v=2&duration=long&category=music%2Clive%2DMusic%2CLive&alt=jsonc'; 
     // Wiki API
     var wiki_url='http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&format=json&titles='+keyword+'&rvsection=0';
     //var wiki_url='http://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles='+keyword;
@@ -36,16 +36,21 @@ $(document).ready(function() {
       dataType:"jsonp",
       success: function(response) {
         $("#results").html('');
+              var page_range1 = 0;
+              var page_range2 = 5;
+              var page_range3 = 6;
+              var page_range4 = 10;
 
         if(response.data.items) {
-          $.each(response.data.items.slice(0,20), function(i, item) {
+          $.each(response.data.items.slice(page_range1,page_range2), function(i, item) {
             // var all_videos=response.item.items; 
             var video_id = item.id;
             var video_title = item.title;
             var video_viewCount = item.viewCount;
+      
 
             // IFRAME Embed for YouTube
-            var video_frame="<iframe width='900' height='600' data-video-id="+video_id+" src='http://www.youtube.com/embed/"+video_id+"' frameborder='2' type='text/html'></iframe>";
+            var video_frame="<iframe width='500' height='300' data-video-id="+video_id+" src='http://www.youtube.com/embed/"+video_id+"fs=1 frameborder='2' webkitallowfullscreen mozallowfullscreen allowfullscreen type='text/html'</iframe>";
             var search_vids="\
               <div class='result'> \
                 <div id='title'>" + video_title + "</div> \
@@ -88,5 +93,58 @@ $(document).ready(function() {
   var throttled_search_function = $.throttle(300, search_function);
   $(".search_input").keyup(throttled_search_function);
 
+  $('#next_page').click(function() {
+  
+    var search_input = $('.search_input').val();
+    //if (search_input) return; // use return to exit function early
+
+    var keyword= encodeURIComponent(search_input);
+    // Youtube API 
+    var yt_url='http://gdata.youtube.com/feeds/api/videos?q='+keyword+'&format=5&max-results=40&v=2&duration=long&category=music%2Clive%2DMusic%2CLive&alt=jsonc'; 
+    // Wiki API
+    var wiki_url='http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvprop=content&format=json&titles='+keyword+'&rvsection=0';
+    //var wiki_url='http://en.wikipedia.org/w/api.php?action=query&prop=extracts&exintro&explaintext&titles='+keyword;
+
+    $.ajax ({
+      type: "GET",   //you can also use Method: instead of type
+      url: yt_url,
+      dataType:"jsonp",
+      success: function(response) {
+        $("#results").html('');
+              var page_range1 = 0;
+              var page_range2 = 5;
+              var page_range3 = 6;
+              var page_range4 = 10;
+
+        if(response.data.items) {
+          $.each(response.data.items.slice(page_range3,page_range4), function(i, item) {
+            // var all_videos=response.item.items; 
+            var video_id = item.id;
+            var video_title = item.title;
+            var video_viewCount = item.viewCount;
+      
+
+            // IFRAME Embed for YouTube
+            var video_frame="<iframe width='500' height='300' data-video-id="+video_id+" src='http://www.youtube.com/embed/"+video_id+"fs=1 frameborder='2' webkitallowfullscreen mozallowfullscreen allowfullscreen type='text/html'</iframe>";
+            var search_vids="\
+              <div class='result'> \
+                <div id='title'>" + video_title + "</div> \
+                <div class='vid_div'>" + video_frame + "</div> \
+                <div id='count'>" + video_viewCount + " Views</div> \
+              </div>";
+
+            console.log("appending "+video_title);
+            $("#results").append(search_vids);
+          });
+        } else {
+          $("#results").html("<div class='no'>No Videos</div>");
+        }
+      }
+    });
+  
+
+  });
+
+  
 }); // and here
 
